@@ -1,3 +1,4 @@
-/node_modules
+node_modules
 *.log
-*/TFLCycleHire2017.csv
+TFLCycleHire2017.csv
+*.xlsx
