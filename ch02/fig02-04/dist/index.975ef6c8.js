@@ -533,43 +533,53 @@ function hmrAcceptRun(bundle, id) {
 
 },{}],"8lqZg":[function(require,module,exports) {
 var _d3 = require("d3");
-const tbl = require("url:./TFLCycleHire2017-Table.csv");
-var table = _d3.select("#vizcontainer").append("table");
-var thead = table.append("thead");
-var tbody = table.append("tbody");
-var columns = [
-    "hour",
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday"
-];
-thead.append("tr").selectAll("th").data(columns).enter().append("th").text(function(d) {
-    return d;
+const tbl = require("url:./weekdayrentalsbyhour.csv");
+const width = 500, height = 600;
+let viz = _d3.select("#vizcontainer").append("svg").attr("id", "#svg").attr("width", width).attr("height", height);
+_d3.csv(tbl).then((data)=>{
+    const x = _d3.scaleLinear().domain([
+        0,
+        1007000
+    ]).range([
+        width / 4,
+        width
+    ]);
+    const y = _d3.scaleBand().range([
+        0,
+        height
+    ]).domain(data.map((d)=>d.hour)).padding(0.1);
+    const y2 = _d3.scaleBand().range([
+        0,
+        height
+    ]).domain(data.map((d)=>_d3.format(",")(d.rentals))).padding(0.1);
+    viz.append("g").call(_d3.axisLeft(y)).selectAll("text").attr("transform", "translate(10,0)");
+    viz.append("g").call(_d3.axisLeft(y2)).selectAll("text").attr("transform", "translate(50,0)");
+    viz.selectAll("rect").data(data).join("rect").attr("x", x(0)).attr("y", (d)=>y(d.hour)).attr("width", (d)=>x(d.rentals)).attr("height", y.bandwidth()).attr("fill", "grey");
+    viz.selectAll(".domain").remove();
+    viz.selectAll("text").style("font-family", "calibri").style("font-size", "16px").style("font-weight", "medium").style("text-anchor", "start");
+    let img = document.getElementById("#svg"), filename = "2.4 Bar graph";
+    saveSvg(img, filename + ".svg");
 });
-_d3.csv(tbl).then(function(data) {
-    console.log(data);
-    tabulate(data, columns);
-});
-var tabulate = function(data, columns) {
-    var rows = tbody.selectAll("tr").data(data).enter().append("tr");
-    var cells = rows.selectAll("td").data(function(row) {
-        return columns.map(function(column) {
-            return {
-                column: column,
-                value: row[column]
-            };
-        });
-    }).enter().append("td").text(function(d) {
-        return d.value;
+function saveSvg(svgEl, name) {
+    svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    var svgData = svgEl.outerHTML;
+    var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+    var svgBlob = new Blob([
+        preface,
+        svgData
+    ], {
+        type: "image/svg+xml;charset=utf-8"
     });
-    return table;
-};
+    var svgUrl = URL.createObjectURL(svgBlob);
+    var downloadLink = document.createElement("a");
+    downloadLink.href = svgUrl;
+    downloadLink.download = name;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
 
-},{"d3":"17XFv","url:./TFLCycleHire2017-Table.csv":"ixwh9"}],"17XFv":[function(require,module,exports) {
+},{"d3":"17XFv","url:./weekdayrentalsbyhour.csv":"fR16s"}],"17XFv":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _d3Array = require("d3-array");
@@ -23891,8 +23901,8 @@ exports.default = function(event) {
     event.stopImmediatePropagation();
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"ixwh9":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("bLxZJ") + "TFLCycleHire2017-Table.8d1841c7.csv" + "?" + Date.now();
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fR16s":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("bLxZJ") + "weekdayrentalsbyhour.01225bba.csv" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"lgJ39"}],"lgJ39":[function(require,module,exports) {
 "use strict";
