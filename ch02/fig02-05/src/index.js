@@ -1,67 +1,46 @@
 
 import * as d3 from "d3";
-const tbl = require('url:./weekdayrentalsbyhour.csv');
+import { map } from "d3";
+const tbl = require('url:./commutebikerentals.csv');
 
-const width = 500,
+const width = 900,
   height = 600;
+
+// 	    long	    lat	      eveningendpct	eveningstartpct	morningendpct	morningstartpct
+// min	-0.236769	51.454752	1.67477E-05	  2.68392E-05	    1.03063E-05	  2.57656E-06
+// max	-0.002275	51.549369	0.013555513	  0.004013856	    0.007021134	  0.013466622
+
+
 
 let viz = d3.select('#vizcontainer')
   .append('svg')
   .attr('id', '#svg')
   .attr('width', width)
   .attr('height', height)
+  .attr('viewBox', '0 51.454 0.255 0.1')
   ;
 
 d3.csv(tbl).then((data) => {
-  const x = d3.scaleLinear()
-    .domain([0,1007000])
-    .range([width/4, width])
-    ;
 
-  const y = d3.scaleBand()
-    .range([0,height])
-    .domain(data.map(d => d.hour))
-    .padding(0.1);
-
-  const y2 = d3.scaleBand()
-      .range([0,height])
-      .domain(data.map(d => d3.format(',')(d.rentals)))
-      .padding(0.1);
-
-  viz.append('g')
-    .call(d3.axisLeft(y))
-    .selectAll('text')
-    .attr('transform', 'translate(10,0)')
-    ;
-
-  viz.append('g')
-    .call(d3.axisLeft(y2))
-    .selectAll('text')
-    .attr('transform', 'translate(50,0)')
-    ;
-
-
-  viz.selectAll('rect')
+  viz
+    .append('g')
+    .attr('transform', 'translate(0.25,0)')
+    .selectAll('bubbles')
     .data(data)
-    .join('rect')
-    .attr('x', x(0))
-    .attr('y', d => y(d.hour))
-    .attr('width', d => x(d.rentals))
-    .attr('height', y.bandwidth())
-    .attr('fill', 'grey')
+    .join('circle')
+    .attr('cx', d => d.longitude)
+    .attr('cy', d => d.latitude)
+    .attr('r', d => d.eveningendpct)
+    .style('fill', 'red')
+    // .attr('stroke', 'red')
+    // .attr('stroke-width', 0.011)
+    .attr('fill-opacity', 0.5)
 
-  viz.selectAll('.domain').remove();
-  viz.selectAll('text')
-    .style('font-family','calibri')
-    .style('font-size','16px')
-    .style('font-weight', 'medium')
-    .style('text-anchor','start')
-  ;
 
-  let img = document.getElementById('#svg'),
-    filename = '2.4 Bar graph';
+  // let img = document.getElementById('#svg'),
+  //   filename = '2.5 Bubbles';
     
-  saveSvg(img, filename + '.svg');
+  // saveSvg(img, filename + '.svg');
 
 
 
