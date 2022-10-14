@@ -5,10 +5,32 @@
         <meta charset="utf-8">
         <title>A simple frontend with Parcel</title>
 
-        <link rel="stylesheet" href="/index.5cc6dbb3.css">
-        <script src="/index.8c8e9774.js" defer=""></script>
+        <link rel="stylesheet" href="/index.4d663569.css">
+        <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+        <script src="/index.975ef6c8.js" defer=""></script>
     </head>
     <body>
-        <div id="vizcontainer"></div>
+        <div class="container">
+            <div class="row">
+                <h1>Morning</h1>
+                <h3 class="col text-center start">Start</h3>
+                <h3 class="col text-center end">End</h3>
+                <div class="row">
+                    <div class="col cyclemap start" id="morningstart"></div>
+                    <div class="col cyclemap end" id="morningend"></div>
+                </div>
+            </div>
+            <div class="row">
+                <h1>Evening</h1>
+                <h3 class="col text-center start">Start</h3>
+                <h3 class="col text-center end">End</h3>
+                <div class="row">
+                    <div class="col cyclemap start" id="eveningstart"></div>
+                    <div class="col cyclemap end" id="eveningend"></div>
+                </div>
+            </div>
+        </div>
+        <div id="captions"></div>
     </body>
 </html>

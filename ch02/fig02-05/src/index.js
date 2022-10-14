@@ -1,61 +1,40 @@
 
-import * as d3 from "d3";
-import { map } from "d3";
-const tbl = require('url:./commutebikerentals.csv');
 
-const width = 900,
-  height = 600;
+// const { symbolAsterisk } = require('d3');
 
-// 	    long	    lat	      eveningendpct	eveningstartpct	morningendpct	morningstartpct
-// min	-0.236769	51.454752	1.67477E-05	  2.68392E-05	    1.03063E-05	  2.57656E-06
-// max	-0.002275	51.549369	0.013555513	  0.004013856	    0.007021134	  0.013466622
+const { map } = require('d3');
+const mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
+mapboxgl.accessToken = 'pk.eyJ1IjoiY2FsbG1lZGVlcmF5IiwiYSI6ImNqbDhrejUzdDNqejIzcGw3cTlhZ2JjbmgifQ.Gu7-_4OI-WsEM0D4FcR6PQ';
 
+const zoom = 10.8, center = [-0.123179, 51.501543];
+let styles = [
+  {
+    container: 'morningstart',
+    style: 'mapbox://styles/callmedeeray/cl97tig04000614q4q5z3l75q',
+    zoom: zoom,
+    center: center
+  },
+  {
+    container: 'morningend',
+    style: 'mapbox://styles/callmedeeray/cl97u12fd004015qko0nvxecf',
+    zoom: zoom,
+    center: center
+  },
+  {
+    container: 'eveningstart',
+    style: 'mapbox://styles/callmedeeray/cl97u2w6a000315qpwzxygzzq',
+    zoom: zoom,
+    center: center
+  },
+  {
+    container: 'eveningend',
+    style: 'mapbox://styles/callmedeeray/cl97u2c7w000514rwhtoeh1wo',
+    zoom: zoom,
+    center: center
+  }
+];
 
-
-let viz = d3.select('#vizcontainer')
-  .append('svg')
-  .attr('id', '#svg')
-  .attr('width', width)
-  .attr('height', height)
-  .attr('viewBox', '0 51.454 0.255 0.1')
-  ;
-
-d3.csv(tbl).then((data) => {
-
-  viz
-    .append('g')
-    .attr('transform', 'translate(0.25,0)')
-    .selectAll('bubbles')
-    .data(data)
-    .join('circle')
-    .attr('cx', d => d.longitude)
-    .attr('cy', d => d.latitude)
-    .attr('r', d => d.eveningendpct)
-    .style('fill', 'red')
-    // .attr('stroke', 'red')
-    // .attr('stroke-width', 0.011)
-    .attr('fill-opacity', 0.5)
-
-
-  // let img = document.getElementById('#svg'),
-  //   filename = '2.5 Bubbles';
-    
-  // saveSvg(img, filename + '.svg');
-
-
-
+styles.forEach(d => {
+  new mapboxgl.Map(d)
 })
 
-function saveSvg(svgEl, name) {
-  svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-  var svgData = svgEl.outerHTML;
-  var preface = '<?xml version="1.0" standalone="no"?>\r\n';
-  var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
-  var svgUrl = URL.createObjectURL(svgBlob);
-  var downloadLink = document.createElement("a");
-  downloadLink.href = svgUrl;
-  downloadLink.download = name;
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-  document.body.removeChild(downloadLink);
-}
