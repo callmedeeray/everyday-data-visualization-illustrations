@@ -1,4 +1,4 @@
 node_modules
 *.log
-TFLCycleHire2017.csv
+*.csv
 *.xlsx

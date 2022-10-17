@@ -1,54 +1,41 @@
 
 const mapboxgl = require('mapbox-gl');
+const turf = require('@turf/turf');
+const tbl = require('url:./mondaycommuterentals.csv');
+const d3 = require('d3');
+
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY2FsbG1lZGVlcmF5IiwiYSI6ImNqbDhrejUzdDNqejIzcGw3cTlhZ2JjbmgifQ.Gu7-_4OI-WsEM0D4FcR6PQ';
 
 const zoom = 10.8, center = [-0.123179, 51.501543];
 
 let map = new mapboxgl.Map({
-    container: 'animation',
-    style: 'mapbox://styles/callmedeeray/cl9bvp2y2000g14pdz2yere9q',
-    zoom: zoom,
-    center: center
-  })
+  container: 'animation',
+  style: 'mapbox://styles/callmedeeray/cl9bvp2y2000g14pdz2yere9q',
+  zoom: zoom,
+  center: center
+})
 
-let data = [
-// StartStation Lat, 0
-// StartStation Lon, 1
-// StartStaton Docks, 2
-// EndStation Lat, 3
-// EndStation Lon, 4
-// EndStationDocks, 5
-// Rental Id, 6 
-// Duration, 7
-// Bike Id, 8
-// StartDate, 9
-// StartStation Id, 10 
-// StartStation Name, 11
-// EndDate, 12
-// EndStation Id, 13
-// EndStation Name, 14
-// Year 15
-[51.490163,-0.190393,29,51.490945,-0.18119,30,63751445,180,3428,'2017-04-05 22:47:00,219',"Bramham Gardens, Earl's Court",'2017-04-05 22:50:00,216',"Old Brompton Road, South Kensington",2017],
-[51.490163,-0.190393,29,51.490945,-0.18119,30,64016293,180,13909,'2017-04-12 21:41:00,219',"Bramham Gardens, Earl's Court",'2017-04-12 21:44:00,216',"Old Brompton Road, South Kensington",2017],
-[51.490163,-0.190393,29,51.490945,-0.18119,30,64334332,180,11693,'2017-04-23 19:20:00,219',"Bramham Gardens, Earl's Court",'2017-04-23 19:23:00,216',"Old Brompton Road, South Kensington",2017],
-[51.490163,-0.190393,29,51.490945,-0.18119,30,64567541,240,4552,'2017-05-01 20:12:00,219',"Bramham Gardens, Earl's Court",'2017-05-01 20:16:00,216',"Old Brompton Road, South Kensington",2017],
-[51.490163,-0.190393,29,51.490945,-0.18119,30,64787260,180,5270,'2017-05-08 19:44:00,219',"Bramham Gardens, Earl's Court",'2017-05-08 19:47:00,216',"Old Brompton Road, South Kensington",2017]
-]
+// Number of steps to use in the arc and animation, more steps means
+// a smoother arc and animation, but too many steps will result in a
+// low frame rate
+const steps = 500;
 
 
 map.on('style.load', () => {
-  data.forEach((d) => {
-    let origin = [d[0],d[1]],
-        destination = [d[3],d[4]],
+  let everything = [];
+  d3.csv(tbl).then((data) => {
+    data.forEach((d) => {
+      let startpoint = [d.StartStationLon, d.StartStationLat],
+        endpoint = [d.EndStationLon, d.EndStationLat],
         route = {
           'type': 'FeatureCollection',
           'features': [
             {
-              'type':'Feature',
+              'type': 'Feature',
               'geometry': {
                 'type': 'LineString',
-                'coordinates': [orgin, destination]
+                'coordinates': [startpoint, endpoint]
               }
             }
           ]
@@ -57,21 +44,119 @@ map.on('style.load', () => {
           'type': 'FeatureCollection',
           'features': [
             {
-              'type':'Feature',
+              'type': 'Feature',
               'properties': {},
               'geometry': {
                 'type': 'Point',
-                'coordinates': origin
+                'coordinates': startpoint
               }
             }
           ]
+        };
+      // Calculate the distance in kilometers between route start/end point.
+      const lineDistance = turf.length(route.features[0]);
+
+      const arc = [];
+
+
+      // Draw an arc between the `origin` & `destination` of the two points
+      for (let i = 0; i < lineDistance; i += lineDistance / steps) {
+        const segment = turf.along(route.features[0], i);
+        arc.push(segment.geometry.coordinates);
+      }
+
+      // Update the route with calculated arc coordinates
+      route.features[0].geometry.coordinates = arc;
+
+      everything.push({ route: route, point: point });
+
+
+    })
+    // Used to increment the value of the point measurement against the route.
+    let counter = 0;
+
+    map.on('load', () => {
+      // IT'S NOT GETTING HERE FOR SOME REASON
+      console.log('hello!')
+      everything.forEach((e, j) => {
+
+        map.addSource('route' + j, {
+          'type': 'geojson',
+          'data': e.route
+        });
+
+        map.addSource('point' + j, {
+          'type': 'geojson',
+          'data': e.point
+        });
+
+        map.addLayer({
+          'id': 'route' + j,
+          'source': 'route' + j,
+          'type': 'line',
+          'paint': {
+            'line-width': 2,
+            'line-color': '#007cbf'
+          }
+        });
+
+        map.addLayer({
+          'id': 'point' + j,
+          'source': 'point' + j,
+          'type': 'circle',
+          'paint': {
+            'circle-radius': 2,
+            'circle-color': '#F84C4C' // red color
+          }
+        });
+
+
+
+        function animate() {
+          everything.forEach((d) => {
+            let route = d.route,
+              point = d.point;
+
+
+            let start =
+              route.features[0].geometry.coordinates[
+              counter >= steps ? counter - 1 : counter
+              ];
+            let end =
+              route.features[0].geometry.coordinates[
+              counter >= steps ? counter : counter + 1
+              ];
+            if (!start || !end) return;
+
+            // Update point geometry to a new position based on counter denoting
+            // the index to access the arc
+            point.features[0].geometry.coordinates =
+              route.features[0].geometry.coordinates[counter];
+
+            // Calculate the bearing to ensure the icon is rotated to match the route arc
+            // The bearing is calculated between the current point and the next point, except
+            // at the end of the arc, which uses the previous point and the current point
+            point.features[0].properties.bearing = turf.bearing(
+              turf.point(start),
+              turf.point(end)
+            );
+
+            // Update the source with this new data
+            map.getSource('point' + j).setData(point);
+
+            // Request the next frame of animation as long as the end has not been reached
+            if (counter < steps) {
+              requestAnimationFrame(animate);
+            }
+
+            counter = counter + 1;
+
+          })
         }
-  
-  
-  
-  
-  
+        // Start the animation
+        animate(counter);
       })
 
-
-})
+    });
+  });
+});
