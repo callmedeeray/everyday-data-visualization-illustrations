@@ -1,4 +1,9 @@
 node_modules
 *.log
-*.csv
+TFLCycleHire2017.csv
 *.xlsx
+.parcel-cache
+dist
+ch02/animated-map/dist/index.html
+ch02/animated-map/dist/index.975ef6c8.js.map
+ch02/animated-map/dist/index.975ef6c8.js
