@@ -534,10 +534,10 @@ function hmrAcceptRun(bundle, id) {
 },{}],"8lqZg":[function(require,module,exports) {
 const mapboxgl = require("mapbox-gl");
 const turf = require("@turf/turf");
-const tbl = require("url:./birthdaycommuterentals.csv");
+const tbl = require("url:./one-day-morning-commute-rentals.csv");
 const d3 = require("d3");
 mapboxgl.accessToken = "pk.eyJ1IjoiY2FsbG1lZGVlcmF5IiwiYSI6ImNqbDhrejUzdDNqejIzcGw3cTlhZ2JjbmgifQ.Gu7-_4OI-WsEM0D4FcR6PQ";
-const zoom = 10.8, center = [
+const zoom = 12.2, center = [
     -0.123179,
     51.501543
 ];
@@ -550,7 +550,7 @@ let map = new mapboxgl.Map({
 // Number of steps to use in the arc and animation, more steps means
 // a smoother arc and animation, but too many steps will result in a
 // low frame rate
-const steps = 50;
+const steps = 500;
 let routes = {
     "type": "FeatureCollection",
     "features": []
@@ -561,17 +561,14 @@ let routes = {
 // Used to increment the value of the point measurement against the route.
 let counter = 0;
 map.on("style.load", ()=>{
-    console.log("style loaded");
     d3.csv(tbl).then((data)=>{
-        console.log("csv loaded");
-        console.log("starting data loop");
         data.forEach((d, j)=>{
             let startpoint = [
-                d.StartStationLon,
-                d.StartStationLat
+                +d.StartStationLon,
+                +d.StartStationLat
             ], endpoint = [
-                d.EndStationLon,
-                d.EndStationLat
+                +d.EndStationLon,
+                +d.EndStationLat
             ], route_features = {
                 "type": "Feature",
                 "geometry": {
@@ -602,45 +599,29 @@ map.on("style.load", ()=>{
             routes.features.push(route_features);
             points.features.push(point_features);
         });
-        console.log("finished data loop");
-        // console.log(routes)
-        // console.log(points)
         map.on("load", ()=>{
-            console.log("map loaded");
-            // map.addSource('routes', {
-            //   'type': 'geojson',
-            //   'data': routes
-            // });
             map.addSource("points", {
                 "type": "geojson",
                 "data": points
             });
-            // map.addLayer({
-            //   'id': 'routes',
-            //   'source': 'routes',
-            //   'type': 'line',
-            //   'paint': {
-            //     'line-width': 2,
-            //     'line-color': '#007cbf'
-            //   }
-            // });
             map.addLayer({
                 "id": "points",
                 "source": "points",
                 "type": "circle",
                 "paint": {
-                    "circle-radius": 5,
+                    "circle-radius": 4,
                     "circle-color": "#F84C4C" // red color
                 }
             });
-            if (counter < steps) {
+            function animate() {
                 points.features.forEach((p, i)=>{
                     let start = routes.features[i].geometry.coordinates[counter >= steps ? counter - 1 : counter];
                     let end = routes.features[i].geometry.coordinates[counter >= steps ? counter : counter + 1];
                     if (!start || !end) return;
                     // Update point geometry to a new position based on counter denoting
                     // the index to access the arc
-                    p.geometry.coordinates = p.geometry.coordinates[counter];
+                    // console.log(routes)
+                    p.geometry.coordinates = routes.features[i].geometry.coordinates[counter];
                     // Calculate the bearing to ensure the icon is rotated to match the route arc
                     // The bearing is calculated between the current point and the next point, except
                     // at the end of the arc, which uses the previous point and the current point
@@ -649,47 +630,28 @@ map.on("style.load", ()=>{
                 });
                 // Update the source with this new data
                 map.getSource("points").setData(points);
+                // Request the next frame of animation as long as the end has not been reached
+                if (counter < steps) requestAnimationFrame(animate);
                 counter += 1;
             }
+            document.getElementById("replay").addEventListener("click", ()=>{
+                // Set the coordinates of the original point back to origin
+                points.features.forEach((p, i)=>{
+                    points.features[0].geometry.coordinates = origin;
+                });
+                // Update the source layer
+                map.getSource("points").setData(points);
+                // Reset the counter
+                counter = 0;
+                // Restart the animation
+                animate(counter);
+            });
+            animate(counter);
         });
-    // function animate(routes, points) {
-    //   let start =
-    //     routes.features.geometry.coordinates[
-    //     counter >= steps ? counter - 1 : counter
-    //     ];
-    //   let end =
-    //     routes.features.geometry.coordinates[
-    //     counter >= steps ? counter : counter + 1
-    //     ];
-    //   if (!start || !end) return;
-    //   // Update point geometry to a new position based on counter denoting
-    //   // the index to access the arc
-    //   points.features[0].geometry.coordinates =
-    //     routes.features[0].geometry.coordinates[counter];
-    //   // Calculate the bearing to ensure the icon is rotated to match the route arc
-    //   // The bearing is calculated between the current point and the next point, except
-    //   // at the end of the arc, which uses the previous point and the current point
-    //   points.features[0].properties.bearing = turf.bearing(
-    //     turf.point(start),
-    //     turf.point(end)
-    //   );
-    //   // Update the source with this new data
-    //   map.getSource('points').setData(points);
-    //   // Request the next frame of animation as long as the end has not been reached
-    //   if (counter < steps) {
-    //     requestAnimationFrame(animate);
-    //   }
-    //   counter += 1;
-    // }
-    // // Start the animation
-    // routes.feautures.forEach((d,i) => {
-    //   animate()
-    // })
-    // animate(counter, point);
     });
 });
 
-},{"mapbox-gl":"562rs","@turf/turf":"fxm9R","url:./birthdaycommuterentals.csv":"fsqPw","d3":"17XFv"}],"562rs":[function(require,module,exports) {
+},{"mapbox-gl":"562rs","@turf/turf":"fxm9R","url:./one-day-morning-commute-rentals.csv":"34V8v","d3":"17XFv"}],"562rs":[function(require,module,exports) {
 /* Mapbox GL JS is Copyright © 2020 Mapbox and subject to the Mapbox Terms of Service ((https://www.mapbox.com/legal/tos/). */ (function(global, factory) {
     module.exports = factory();
 })(this, function() {
@@ -52719,8 +52681,8 @@ process.umask = function() {
     return 0;
 };
 
-},{}],"fsqPw":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("bLxZJ") + "birthdaycommuterentals.d6dc241a.csv" + "?" + Date.now();
+},{}],"34V8v":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("bLxZJ") + "one-day-morning-commute-rentals.7a230a82.csv" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"lgJ39"}],"lgJ39":[function(require,module,exports) {
 "use strict";
