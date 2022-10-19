@@ -537,7 +537,7 @@ const turf = require("@turf/turf");
 const tbl = require("url:./one-day-morning-commute-rentals.csv");
 const d3 = require("d3");
 mapboxgl.accessToken = "pk.eyJ1IjoiY2FsbG1lZGVlcmF5IiwiYSI6ImNqbDhrejUzdDNqejIzcGw3cTlhZ2JjbmgifQ.Gu7-_4OI-WsEM0D4FcR6PQ";
-const zoom = 12.2, center = [
+const zoom = 11.5, center = [
     -0.123179,
     51.501543
 ];

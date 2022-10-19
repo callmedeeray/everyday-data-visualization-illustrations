@@ -6,7 +6,7 @@ const d3 = require('d3');
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY2FsbG1lZGVlcmF5IiwiYSI6ImNqbDhrejUzdDNqejIzcGw3cTlhZ2JjbmgifQ.Gu7-_4OI-WsEM0D4FcR6PQ';
 
-const zoom = 12.2, center = [-0.123179, 51.501543];
+const zoom = 11.5, center = [-0.123179, 51.501543];
 
 let map = new mapboxgl.Map({
   container: 'animation',

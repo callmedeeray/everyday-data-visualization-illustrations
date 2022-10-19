@@ -1,23 +1,9 @@
 body {
-    width: 1650px;
-    height: 2250px;
     overflow: scroll;
 }
 
 .cyclemap {
-    height: 1000px;
-}
-
-.start {
-    margin-right: 10px;
-}
-
-.end {
-    margin-left: 10px;
-}
-
-h1 {
-    transform: translateY(20px);
+    height: 85vh;
 }
 
 .overlay {
