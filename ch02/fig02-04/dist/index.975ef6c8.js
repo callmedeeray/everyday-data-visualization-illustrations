@@ -554,7 +554,7 @@ _d3.csv(tbl).then((data)=>{
     ]).domain(data.map((d)=>_d3.format(",")(d.rentals))).padding(0.1);
     viz.append("g").call(_d3.axisLeft(y)).selectAll("text").attr("transform", "translate(10,0)");
     viz.append("g").call(_d3.axisLeft(y2)).selectAll("text").attr("transform", "translate(50,0)");
-    viz.selectAll("rect").data(data).join("rect").attr("x", x(0)).attr("y", (d)=>y(d.hour)).attr("width", (d)=>x(d.rentals)).attr("height", y.bandwidth()).attr("fill", "grey");
+    viz.selectAll("rect").data(data).join("rect").attr("x", x(0)).attr("y", (d)=>y(d.hour)).attr("width", (d)=>x(d.rentals) - x(0)).attr("height", y.bandwidth()).attr("fill", "grey");
     viz.selectAll(".domain").remove();
     viz.selectAll("text").style("font-family", "calibri").style("font-size", "16px").style("font-weight", "medium").style("text-anchor", "start");
     let img = document.getElementById("#svg"), filename = "2.4 Bar graph";
