@@ -14,7 +14,6 @@ taste = list(data.values())
 
 fig = plt.figure(figsize=(12, 5))
 plt.bar(fruits, taste)
-plt.title('Taste score')
 plt.show()
 
 
