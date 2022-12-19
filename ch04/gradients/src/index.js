@@ -2,25 +2,89 @@
 import * as d3 from "d3";
 
 const
-  margin = { top: 10, right: 10, bottom: 10, left: 10 },
-  width = 550 - margin.right - margin.left,
-  height = 500 - margin.top - margin.bottom,
-  colors = ['#00A791', '#6E01CC', '#949494'] // males, females, overall
+  width = 550,
+  height = 100
   ;
+
+const images = [
+  { name: 'continuousSingleHue' },
+  { name: 'singleVsTwoHue' },
+  { name: 'colorSpaces' },
+];
+
+let colorScale = d3.scaleSequential()
+  .interpolator(d3.interpolate(d3.color('hsl(270,0%,50%)'), 'hsl(270,100%,50%)'))
+  .domain([0, 99])
+  ;
+const imgName = 'continuousSingleHue';
+const data = Array.from(Array(100).keys());
+
+
+let xScale = d3.scaleLinear()
+  .domain([0, 99])
+  .range([0, width]);
 
 let viz = d3.select('#vizcontainer')
   .append('svg')
-  .attr('id', '#svg')
+  .attr('id', '#' + imgName)
   .attr('width', width)
   .attr('height', height)
-  .attr('transform', `translate(${margin.left},${margin.top})`)
-  .append('g')
-  ;
+  .append('g');
+
+viz.selectAll('rect')
+  .data(data)
+  .join('rect')
+  .attr('height', height)
+  .attr('y', 0)
+  .attr('x', d => Math.floor(xScale(d)))
+  .attr('width', (d) => {
+    if (d == 99.5) {
+      return 6;
+    }
+    return Math.floor(xScale(d + 1)) - Math.floor(xScale(d)) + 1;
+  })
+  .attr('fill', d =>
+    //d3.color(`hsl(270, ${d}%, 50%)`) // continuousSingleHue
+    colorScale(d)
+  );
 
 
-// let img = document.getElementById('#svg'),
-//   filename = 'gradients';
-// saveSvg(img, filename + '.svg');
+
+let viz2 = d3.select('#vizcontainer')
+  .append('svg')
+  .attr('id', '#' + imgName + '2')
+  .attr('width', width)
+  .attr('height', height)
+  .append('g');
+
+viz2.selectAll('rect')
+  .data(data)
+  .join('rect')
+  .attr('height', height)
+  .attr('y', 0)
+  .attr('x', d => Math.floor(xScale(d)))
+  .attr('width', (d) => {
+    if (d == 99.5) {
+      return 6;
+    }
+    return Math.floor(xScale(d + 1)) - Math.floor(xScale(d)) + 1;
+  })
+  .attr('fill', d =>
+    d3.color(`hsl(270, ${d}%, 50%)`) // continuousSingleHue
+    //colorScale(d)
+  );
+
+
+
+
+
+
+
+
+
+// let image = document.getElementById('#' + imgName);
+// saveSvg(image, imgName + '.svg');
+
 
 
 
