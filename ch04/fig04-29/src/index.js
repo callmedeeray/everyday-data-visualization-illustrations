@@ -1,102 +1,59 @@
 
 import * as d3 from "d3";
+const data = [93, 75, 69, 43],
+  filename = 'accidental-emphasis';
 
 const
-  width = 700,
-  height = 300
+  width = 750,
+  height = 250,
+  colors = [d3.color('hsl(330,98%,42%)'), d3.color('hsl(60,98%,42%)'), d3.color('hsl(150,98%,72%)'), d3.color('hsl(240,98%,42%)')],
+  colors2 = [d3.color('hsl(330,98%,42%)'), d3.color('hsl(60,98%,42%)'), d3.color('hsl(150,98%,42%)'), d3.color('hsl(240,98%,42%)')]
   ;
-
-
-const imgName = 'sequential-vs-diverging';
-let data = [];
-for (let i = 1; i < 100; i++) {
-  data.push({ 'x': 10 + (width / 3 - 20) * Math.random(), 'y': 10 + (height - 20) * Math.random(), 'i': i })
-}
-
-
-
-let grey = '#d9d9d9',
-  color2 = d3.color('hsl(210,100%,44%)'),// '#E70101',// '#00ffff',
-  color1 = d3.color('hsl(0,100%,46%)')// '#0270DD';// '#633091';
-
-let colorScale1 = d3.scaleSequential()
-  .interpolator(d3.interpolate(grey, color2))
-  .domain([0, 99])
-  ;
-
-
-let colorScale2 = d3.scaleDiverging()
-  .domain([0, 50, 99])
-  .range([color1, grey, color2])
-  ;
-
-let xScale = d3.scaleLinear()
-  .domain([0, 99])
-  .range([0, (width / 3) - 20]);
 
 let viz = d3.select('#vizcontainer')
   .append('svg')
-  .attr('id', '#' + imgName)
+  .attr('id', '#svg')
   .attr('width', width)
   .attr('height', height)
+  .append('g')
+  ;
 
-let first = viz.append('g');
+const x = d3.scaleLinear()
+  .domain([0, 100])
+  .range([0, 0.45 * width]);
 
-first.selectAll('circle')
-  .data(data)
-  .join('circle')
-  .attr('r', 10)
-  .attr('cy', d => 0.8 * d.y)
-  .attr('cx', d => d.x)
-  .attr('fill', d => colorScale1(d.i))
-  .attr('stroke', 'none');
+const y = d3.scaleBand()
+  .domain([0, 1, 2, 3])
+  .range([0, height])
+  .padding([0.1]);
 
-first.selectAll('rect')
-  .data(data)
-  .join('rect')
-  .attr('x', d => 10 + Math.floor(xScale(d.i)))
-  .attr('y', 0.9 * height)
-  .attr('width', (d) => {
-    if (d.i == 99) {
-      return 6;
-    }
-    return Math.floor(xScale(d.i + 1)) - Math.floor(xScale(d.i)) + 1;
-  })
-  .attr('height', 0.1 * height)
-  .attr('fill', d => colorScale1(d.i));
-
-let second = viz.append('g');
-second.selectAll('circle')
-  .data(data)
-  .join('circle')
-  .attr('r', 10)
-  .attr('cy', d => 0.8 * d.y)
-  .attr('cx', d => 310 + d.x)
-  .attr('fill', d => colorScale2(d.i))
-  .attr('stroke', 'none');
-
-second.selectAll('rect')
+let bars1 = viz.append('g');
+bars1.selectAll('rect')
   .data(data)
   .join('rect')
-  .attr('x', d => 310 + Math.floor(xScale(d.i)))
-  .attr('y', 0.9 * height)
-  .attr('width', (d) => {
-    console.log(d.i)
-    if (d.i == 99) {
-      return 6;
-    }
-    return Math.floor(xScale(d.i + 1)) - Math.floor(xScale(d.i)) + 1;
-  })
-  .attr('height', 0.1 * height)
-  .attr('fill', d => colorScale2(d.i));
+  .attr('y', (d, i) => y(i))
+  .attr('x', x(0))
+  .attr('width', d => x(d) - x(0))
+  .attr('height', y.bandwidth())
+  .attr('fill', (d, i) => colors[i]);
+
+let bars2 = viz.append('g').attr('transform', `translate(${width * 0.55},0)`);
+bars2.selectAll('rect')
+  .data(data)
+  .join('rect')
+  .attr('y', (d, i) => y(i))
+  .attr('x', x(0))
+  .attr('width', d => x(d) - x(0))
+  .attr('height', y.bandwidth())
+  .attr('fill', (d, i) => colors2[i]);
+
+viz.selectAll('.domain').remove();
+viz.selectAll('.tick').select('line').remove();
 
 
 
-
-// let image = document.getElementById('#' + imgName);
-// saveSvg(image, imgName + '.svg');
-
-
+// let img = document.getElementById('#svg');
+// saveSvg(img, filename + '.svg');
 
 
 function saveSvg(svgEl, name) {
