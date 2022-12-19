@@ -144,9 +144,9 @@ d3.csv(tbl).then((data) => {
 
 
 
-  let img = document.getElementById('#svg'),
-    filename = 'colorblindness prevalence';
-  saveSvg(img, filename + '.svg');
+  // let img = document.getElementById('#svg'),
+  //   filename = 'colorblindness prevalence';
+  // saveSvg(img, filename + '.svg');
 
 });
 
