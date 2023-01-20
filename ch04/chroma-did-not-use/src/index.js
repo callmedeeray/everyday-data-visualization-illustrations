@@ -3,19 +3,20 @@ import * as d3 from "d3";
 
 const
   width = 550,
-  height = 100
+  height = 100,
+  lum = 50
   ;
 
 const imgName = 'chromaGradient';
-const data = Array.from(Array(100).keys());
+const data = Array.from(Array(230).keys());
 
 let colorScale1 = d3.scaleSequential()
-  .interpolator(d3.interpolate(d3.hcl(0, 0, 50), d3.hcl(0, 230, 50))) // chroma
-  .domain([0, 99])
+  .interpolator(d3.interpolate(d3.hcl(0, 0, lum), d3.hcl(0, 230, lum))) // chroma
+  .domain([0, 229])
   ;
 
 let xScale = d3.scaleLinear()
-  .domain([0, 99])
+  .domain([0, 229])
   .range([0, width]);
 
 let viz = d3.select('#vizcontainer')
@@ -32,7 +33,7 @@ first.selectAll('rect')
   .attr('y', 0)
   .attr('x', d => Math.floor(xScale(d)))
   .attr('width', (d) => {
-    if (d == 99) {
+    if (d == 229) {
       return 6;
     }
     return Math.floor(xScale(d + 1)) - Math.floor(xScale(d)) + 1;
