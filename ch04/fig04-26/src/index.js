@@ -7,28 +7,31 @@ const
   ;
 
 
-const imgName = 'single-vs-two-hue';
+const imgName = 'sequential-vs-diverging';
 let data = [];
-for (let i = 1; i <= 100; i++) {
+for (let i = 1; i < 100; i++) {
   data.push({ 'x': 10 + (width / 3 - 20) * Math.random(), 'y': 10 + (height - 20) * Math.random(), 'i': i })
 }
 
 
 
+let grey = '#d9d9d9',
+  color2 = d3.color('hsl(210,100%,44%)'),// '#E70101',// '#00ffff',
+  color1 = d3.color('hsl(0,100%,46%)')// '#0270DD';// '#633091';
 
 let colorScale1 = d3.scaleSequential()
-  .interpolator(d3.interpolate(d3.color('hsl(270,0%,50%)'), 'hsl(270,100%,50%)'))
+  .interpolator(d3.interpolate(grey, color2))
   .domain([0, 99])
   ;
 
 
-let colorScale2 = d3.scaleSequential()
-  .interpolator(d3.interpolateHsl(d3.color('hsl(180,10%,70%)'), 'hsl(270,100%,50%)'))
-  .domain([1, 100])
+let colorScale2 = d3.scaleDiverging()
+  .domain([0, 50, 99])
+  .range([color1, grey, color2])
   ;
 
 let xScale = d3.scaleLinear()
-  .domain([1, 100])
+  .domain([0, 99])
   .range([0, (width / 3) - 20]);
 
 let viz = d3.select('#vizcontainer')
@@ -54,7 +57,7 @@ first.selectAll('rect')
   .attr('x', d => 10 + Math.floor(xScale(d.i)))
   .attr('y', 0.9 * height)
   .attr('width', (d) => {
-    if (d.i == 100) {
+    if (d.i == 99) {
       return 6;
     }
     return Math.floor(xScale(d.i + 1)) - Math.floor(xScale(d.i)) + 1;
@@ -72,16 +75,14 @@ second.selectAll('circle')
   .attr('fill', d => colorScale2(d.i))
   .attr('stroke', 'none');
 
-
-
-
 second.selectAll('rect')
   .data(data)
   .join('rect')
   .attr('x', d => 310 + Math.floor(xScale(d.i)))
   .attr('y', 0.9 * height)
   .attr('width', (d) => {
-    if (d.i == 100) {
+    console.log(d.i)
+    if (d.i == 99) {
       return 6;
     }
     return Math.floor(xScale(d.i + 1)) - Math.floor(xScale(d.i)) + 1;
