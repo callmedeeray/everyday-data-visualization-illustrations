@@ -3,20 +3,14 @@ import * as d3 from "d3";
 
 const
   width = 550,
-  height = 210
+  height = 100
   ;
 
-// const images = [
-//   { name: 'continuousSingleHue' },
-//   { name: 'singleVsTwoHue' },
-//   { name: 'colorSpaces' },
-// ];
-
-const imgName = 'continuousSingleHue';
+const imgName = 'chromaGradient';
 const data = Array.from(Array(100).keys());
 
 let colorScale1 = d3.scaleSequential()
-  .interpolator(d3.interpolate(d3.color('hsl(270,0%,50%)'), 'hsl(270,100%,50%)'))
+  .interpolator(d3.interpolate(d3.hcl(0, 0, 50), d3.hcl(0, 230, 50))) // chroma
   .domain([0, 99])
   ;
 
@@ -34,11 +28,11 @@ let first = viz.append('g');
 first.selectAll('rect')
   .data(data)
   .join('rect')
-  .attr('height', 100)
+  .attr('height', height)
   .attr('y', 0)
   .attr('x', d => Math.floor(xScale(d)))
   .attr('width', (d) => {
-    if (d == 99.5) {
+    if (d == 99) {
       return 6;
     }
     return Math.floor(xScale(d + 1)) - Math.floor(xScale(d)) + 1;
@@ -46,7 +40,7 @@ first.selectAll('rect')
   .attr('fill', d => colorScale1(d));
 
 
-// let image = document.getElementById('#' + imgName);
+let image = document.getElementById('#' + imgName);
 // saveSvg(image, imgName + '.svg');
 
 

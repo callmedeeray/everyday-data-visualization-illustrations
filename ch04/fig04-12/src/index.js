@@ -41,7 +41,7 @@ first.selectAll('rect')
 
 
 let image = document.getElementById('#' + imgName);
-saveSvg(image, imgName + '.svg');
+// saveSvg(image, imgName + '.svg');
 
 
 

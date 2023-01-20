@@ -77,7 +77,7 @@ d3.csv(tbl).then((data) => {
   viz.selectAll('.tick').select('line').remove();
 
   let img = document.getElementById('#svg');
-  saveSvg(img, filename + '.svg');
+  // saveSvg(img, filename + '.svg'); // uncomment this to save the image
 
 })
 
