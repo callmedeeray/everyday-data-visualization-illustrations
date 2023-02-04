@@ -17,7 +17,7 @@ for (let i = 1; i <= 100; i++) {
 
 
 let colorScale1 = d3.scaleSequential()
-  .interpolator(d3.interpolate(d3.color('hsl(270,0%,50%)'), 'hsl(270,100%,50%)'))
+  .interpolator(d3.interpolate(d3.color('hsl(270,0%,100%)'), 'hsl(270,100%,50%)'))
   .domain([0, 99])
   ;
 
