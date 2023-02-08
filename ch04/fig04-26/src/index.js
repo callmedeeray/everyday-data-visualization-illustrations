@@ -6,32 +6,35 @@ const
   height = 300
   ;
 
+const arange = (start, stop, step) =>
+  Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
 
-const imgName = 'sequential-vs-diverging';
+const imgName = 'continuous-vs-stepped';
 let data = [];
-for (let i = 1; i < 100; i++) {
+for (let i = 1; i <= 100; i++) {
   data.push({ 'x': 10 + (width / 3 - 20) * Math.random(), 'y': 10 + (height - 20) * Math.random(), 'i': i })
 }
 
-
-
 let grey = '#d9d9d9',
-  color2 = d3.color('hsl(210,100%,44%)'),// '#E70101',// '#00ffff',
-  color1 = d3.color('hsl(0,100%,46%)')// '#0270DD';// '#633091';
-
-let colorScale1 = d3.scaleSequential()
-  .interpolator(d3.interpolate(grey, color2))
-  .domain([0, 99])
-  ;
+  color2 = d3.color('hsl(210,100%,44%)'),
+  color1 = d3.color('hsl(0,100%,46%)');
 
 
-let colorScale2 = d3.scaleDiverging()
+let colorScale1 = d3.scaleDiverging()
   .domain([0, 50, 99])
   .range([color1, grey, color2])
+
+let fiveColors = [];
+arange(0, 100, 25).forEach((d) => { fiveColors.push(colorScale1(d)) })
+
+let colorScale2 = d3.scaleThreshold()
+  .domain([20, 40, 60, 80])
+  .range(fiveColors)
   ;
 
+
 let xScale = d3.scaleLinear()
-  .domain([0, 99])
+  .domain([1, 100])
   .range([0, (width / 3) - 20]);
 
 let viz = d3.select('#vizcontainer')
@@ -57,7 +60,7 @@ first.selectAll('rect')
   .attr('x', d => 10 + Math.floor(xScale(d.i)))
   .attr('y', 0.9 * height)
   .attr('width', (d) => {
-    if (d.i == 99) {
+    if (d.i == 100) {
       return 6;
     }
     return Math.floor(xScale(d.i + 1)) - Math.floor(xScale(d.i)) + 1;
@@ -75,14 +78,14 @@ second.selectAll('circle')
   .attr('fill', d => colorScale2(d.i))
   .attr('stroke', 'none');
 
+
 second.selectAll('rect')
   .data(data)
   .join('rect')
   .attr('x', d => 310 + Math.floor(xScale(d.i)))
   .attr('y', 0.9 * height)
   .attr('width', (d) => {
-    console.log(d.i)
-    if (d.i == 99) {
+    if (d.i == 100) {
       return 6;
     }
     return Math.floor(xScale(d.i + 1)) - Math.floor(xScale(d.i)) + 1;
