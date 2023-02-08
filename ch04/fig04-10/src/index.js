@@ -25,7 +25,7 @@ d3.csv(tbl).then((data) => {
 
   const x = d3.scaleLinear()
     .domain([0, 5])
-    .range([width / 5, width * 0.9]);
+    .range([width / 3, width * 0.9]);
 
   const y = d3.scaleBand()
     .domain(groups)
@@ -35,7 +35,7 @@ d3.csv(tbl).then((data) => {
 
   viz.append('g')
     .call(d3.axisLeft(y))
-    .attr('transform', `translate(${width / 5},0)`);
+    .attr('transform', `translate(${width / 3},0)`);
 
   const ySubgroup = d3.scaleBand()
     .domain(subgroups)
@@ -50,7 +50,7 @@ d3.csv(tbl).then((data) => {
     .selectAll('g')
     .data(data)
     .join('g')
-    .attr('class', d => d.group.replace(' ', ''))
+    .attr('class', d => d.group.replace(/[\W_]+/g, ''))
     .attr('transform', d => `translate(0,${y(d.group)})`)
     .selectAll('rect')
     .data(function (d) { return subgroups.map(function (key) { return { key: key, value: d[key] }; }); })
@@ -81,13 +81,13 @@ d3.csv(tbl).then((data) => {
     .attr('font-size', '12px')
     .attr('font-family', 'sans-serif');
 
-  viz.select('.tritandeficiency')
+  viz.select('.tritanbluedeficient')
     .select('.male')
     .attr('transform', `translate(0,${0.5 * ySubgroup.bandwidth()})`)
     .select('rect')
     .attr('fill', colors[2]);
 
-  viz.select('.tritandeficiency')
+  viz.select('.tritanbluedeficient')
     .select('.female')
     .remove();
 

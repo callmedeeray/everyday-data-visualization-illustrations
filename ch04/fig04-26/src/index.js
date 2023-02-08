@@ -7,25 +7,26 @@ const
   ;
 
 
-const imgName = 'single-vs-two-hue';
+const imgName = 'continuous-vs-stepped';
 let data = [];
 for (let i = 1; i <= 100; i++) {
   data.push({ 'x': 10 + (width / 3 - 20) * Math.random(), 'y': 10 + (height - 20) * Math.random(), 'i': i })
 }
 
+let grey = '#d9d9d9',
+  color2 = d3.color('hsl(210,100%,44%)'),
+  color1 = d3.color('hsl(0,100%,46%)');
 
 
+let colorScale1 = d3.scaleDiverging()
+  .domain([0, 50, 99])
+  .range([color1, grey, color2])
 
-let colorScale1 = d3.scaleSequential()
-  .interpolator(d3.interpolate(d3.color('hsl(270,0%,100%)'), 'hsl(270,100%,50%)'))
-  .domain([0, 99])
+let colorScale2 = d3.scaleThreshold()
+  .domain([33, 66])
+  .range([color1, grey, color2])
   ;
 
-
-let colorScale2 = d3.scaleSequential()
-  .interpolator(d3.interpolateHsl(d3.color('hsl(180,10%,70%)'), 'hsl(270,100%,50%)'))
-  .domain([1, 100])
-  ;
 
 let xScale = d3.scaleLinear()
   .domain([1, 100])
@@ -71,8 +72,6 @@ second.selectAll('circle')
   .attr('cx', d => 310 + d.x)
   .attr('fill', d => colorScale2(d.i))
   .attr('stroke', 'none');
-
-
 
 
 second.selectAll('rect')
