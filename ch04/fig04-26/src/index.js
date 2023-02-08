@@ -6,8 +6,6 @@ const
   height = 300
   ;
 
-const arange = (start, stop, step) =>
-  Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
 
 const imgName = 'continuous-vs-stepped';
 let data = [];
@@ -24,12 +22,9 @@ let colorScale1 = d3.scaleDiverging()
   .domain([0, 50, 99])
   .range([color1, grey, color2])
 
-let fiveColors = [];
-arange(0, 100, 25).forEach((d) => { fiveColors.push(colorScale1(d)) })
-
 let colorScale2 = d3.scaleThreshold()
-  .domain([20, 40, 60, 80])
-  .range(fiveColors)
+  .domain([33, 66])
+  .range([color1, grey, color2])
   ;
 
 
