@@ -4421,7 +4421,7 @@
       </viewpoint>
       <simple-id uuid='{C0186337-B08C-4700-A1A6-EC2613859111}' />
     </window>
-    <window class='worksheet' maximized='true' name='6.2 Sales Line Chart'>
+    <window class='worksheet' name='6.2 Sales Line Chart'>
       <cards>
         <edge name='left'>
           <strip size='160'>
@@ -4454,7 +4454,7 @@
       </viewpoint>
       <simple-id uuid='{D450D9CF-5F4C-4FF9-BEAD-113B8FA50856}' />
     </window>
-    <window class='dashboard' name='6.3 Unspaghetti'>
+    <window class='dashboard' maximized='true' name='6.3 Unspaghetti'>
       <viewpoints>
         <viewpoint name='6.6 Sales Line Chart'>
           <zoom type='entire-view' />
@@ -4463,7 +4463,7 @@
           <zoom type='entire-view' />
         </viewpoint>
       </viewpoints>
-      <active id='8' />
+      <active id='-1' />
       <simple-id uuid='{A61BA8B9-F56D-472C-93FC-3D7AD31EE31A}' />
     </window>
     <window class='dashboard' name='6.4 Stacked Bars'>
