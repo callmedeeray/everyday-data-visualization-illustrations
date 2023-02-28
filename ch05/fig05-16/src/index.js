@@ -1,98 +1,61 @@
 
 import * as d3 from "d3";
+const tbl = require('url:./fruits.csv');
 
-const
-  width = 700,
-  height = 300
-  ;
+const imgName = 'CH05_F16_Abbott-One-font';
 
 
-const imgName = 'continuous-vs-stepped';
-let data = [];
-for (let i = 1; i <= 100; i++) {
-  data.push({ 'x': 10 + (width / 3 - 20) * Math.random(), 'y': 10 + (height - 20) * Math.random(), 'i': i })
-}
-
-let grey = '#d9d9d9',
-  color2 = d3.color('hsl(210,100%,44%)'),
-  color1 = d3.color('hsl(0,100%,46%)');
-
-
-let colorScale1 = d3.scaleDiverging()
-  .domain([0, 50, 99])
-  .range([color1, grey, color2])
-
-let colorScale2 = d3.scaleThreshold()
-  .domain([33, 66])
-  .range([color1, grey, color2])
-  ;
-
-
-let xScale = d3.scaleLinear()
-  .domain([1, 100])
-  .range([0, (width / 3) - 20]);
+const width = 500,
+  height = 300;
 
 let viz = d3.select('#vizcontainer')
   .append('svg')
   .attr('id', '#' + imgName)
   .attr('width', width)
   .attr('height', height)
+  ;
 
-let first = viz.append('g');
+d3.csv(tbl).then((data) => {
+  const x = d3.scaleLinear()
+    .domain([50, 100])
+    .range([width / 3, 2 * width / 3])
+    ;
 
-first.selectAll('circle')
-  .data(data)
-  .join('circle')
-  .attr('r', 10)
-  .attr('cy', d => 0.8 * d.y)
-  .attr('cx', d => d.x)
-  .attr('fill', d => colorScale1(d.i))
-  .attr('stroke', 'none');
+  const y = d3.scaleBand()
+    .range([0, height])
+    .domain(data.map(d => d.Fruit))
+    .padding(0.1);
 
-first.selectAll('rect')
-  .data(data)
-  .join('rect')
-  .attr('x', d => 10 + Math.floor(xScale(d.i)))
-  .attr('y', 0.9 * height)
-  .attr('width', (d) => {
-    if (d.i == 100) {
-      return 6;
-    }
-    return Math.floor(xScale(d.i + 1)) - Math.floor(xScale(d.i)) + 1;
-  })
-  .attr('height', 0.1 * height)
-  .attr('fill', d => colorScale1(d.i));
-
-let second = viz.append('g');
-second.selectAll('circle')
-  .data(data)
-  .join('circle')
-  .attr('r', 10)
-  .attr('cy', d => 0.8 * d.y)
-  .attr('cx', d => 310 + d.x)
-  .attr('fill', d => colorScale2(d.i))
-  .attr('stroke', 'none');
+  viz.append('g')
+    .call(d3.axisLeft(y))
+    .selectAll('text')
+    .attr('transform', 'translate(10,0)')
+    .attr('class', 'regular')
+    ;
 
 
-second.selectAll('rect')
-  .data(data)
-  .join('rect')
-  .attr('x', d => 310 + Math.floor(xScale(d.i)))
-  .attr('y', 0.9 * height)
-  .attr('width', (d) => {
-    if (d.i == 100) {
-      return 6;
-    }
-    return Math.floor(xScale(d.i + 1)) - Math.floor(xScale(d.i)) + 1;
-  })
-  .attr('height', 0.1 * height)
-  .attr('fill', d => colorScale2(d.i));
+  viz.selectAll('rect')
+    .data(data)
+    .join('rect')
+    .attr('x', x(0))
+    .attr('y', d => y(d.Fruit))
+    .attr('width', d => x(d.Taste_score))
+    .attr('height', y.bandwidth())
+    .attr('transform', `translate(${width / 3},0)`)
+    ;
+
+  viz.selectAll('.domain').remove();
+  viz.selectAll('.tick').select('line').remove();
 
 
 
+  // let image = document.getElementById('#' + imgName);
+  // saveSvg(image, imgName + '.svg');
 
-// let image = document.getElementById('#' + imgName);
-// saveSvg(image, imgName + '.svg');
+
+
+})
+
 
 
 
