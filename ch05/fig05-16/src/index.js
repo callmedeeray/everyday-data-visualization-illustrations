@@ -9,7 +9,6 @@ const
   margin = { top: 20, right: 20, bottom: 20, left: 20 },
   width = 550 + margin.right + margin.left,
   height = 300 + margin.top + margin.bottom,
-  lineHeight = 32,
   titleSize = 16;
 
 
@@ -83,8 +82,8 @@ d3.csv(tbl).then((data) => {
     .style('font-size', `${titleSize}px`)
     ;
 
-  let image = document.getElementById('#' + imgName);
-  saveSvg(image, imgName.replace(/-/g, ' ') + '.svg');
+  // let image = document.getElementById('#' + imgName);
+  // saveSvg(image, imgName.replace(/-/g, ' ') + '.svg');
 
 
 
