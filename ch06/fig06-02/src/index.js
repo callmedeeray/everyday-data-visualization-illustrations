@@ -6,7 +6,7 @@ const imgName = 'd3-clustered-bars';
 
 
 const
-  margin = { top: 20, right: 20, bottom: 20, left: 40 },
+  margin = { top: 0, right: 35, bottom: 20, left: 50 },
   width = 402 - margin.right - margin.left,
   height = 420 - margin.top - margin.bottom,
   titleSize = 0;
@@ -45,7 +45,7 @@ d3.tsv(tbl).then((data) => {
     .attr('transform', `translate(${margin.left},0)`)
     .attr('font-family', 'Open Sans')
     .attr('font-weight', 300)
-    .attr('font-size', '12px')
+    .attr('class', 'axis')
     .call(d3.axisLeft(y).tickSize(0));
 
 
@@ -58,7 +58,7 @@ d3.tsv(tbl).then((data) => {
     .attr("transform", `translate(0,${height})`)
     .attr('font-family', 'Open Sans')
     .attr('font-weight', 300)
-    .attr('font-size', '12px')
+    .attr('class', 'axis')
     .call(d3.axisBottom(x).ticks(6, "s").tickSizeInner(-height));
 
   // Another scale for subgroup position?
@@ -93,7 +93,7 @@ d3.tsv(tbl).then((data) => {
   viz.selectAll('.domain').remove();
   viz.selectAll('text').attr('fill', '#0B1D43');
   viz.selectAll('.tick').select('line').attr('stroke', '#F5F5F5')
-
+  viz.selectAll('.axis').attr('font-size', 12)
 
   let image = document.getElementById('#' + imgName);
   saveSvg(image, imgName.replace(/-/g, ' ') + '.svg');
