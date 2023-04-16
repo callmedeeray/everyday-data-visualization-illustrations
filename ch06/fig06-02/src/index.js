@@ -6,7 +6,7 @@ const imgName = 'd3-clustered-bars';
 
 
 const
-  margin = { top: 20, right: 20, bottom: 20, left: 20 },
+  margin = { top: 20, right: 20, bottom: 20, left: 40 },
   width = 402 - margin.right - margin.left,
   height = 420 - margin.top - margin.bottom,
   titleSize = 0;
@@ -24,7 +24,7 @@ let svg = d3.select('#vizcontainer')
 svg.append('defs')
   .append('style')
   .attr('type', 'text/css')
-  .text("@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&family=Roboto+Serif:opsz,wght@8..144,100;8..144,200;8..144,300;8..144,400;8..144,500;8..144,600;8..144,700;8..144,800;8..144,900&family=Roboto:wght@100;300;400;500;700;900&display=swap')")
+  .text("@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap')")
   ;
 
 d3.tsv(tbl).then((data) => {
@@ -35,31 +35,37 @@ d3.tsv(tbl).then((data) => {
   // List of groups = species here = value of the first column called group -> I show them on the X axis
   let groups = d3.map(data, d => (d.group))
 
-  // Add X axis
-  let x = d3.scaleBand()
+  // Add y axis
+  let y = d3.scaleBand()
     .domain(groups)
-    .range([margin.left, width + margin.left])
+    .range([0, height])
     .padding([0.2]);
 
   svg.append("g")
-    .attr("transform", `translate(0,${height})`)
-    .call(d3.axisBottom(x).tickSize(0));
+    .attr('transform', `translate(${margin.left},0)`)
+    .attr('font-family', 'Open Sans')
+    .attr('font-weight', 300)
+    .attr('font-size', '12px')
+    .call(d3.axisLeft(y).tickSize(0));
 
-  // Add Y axis
-  let y = d3.scaleLinear()
-    .domain([0, 506000000])
-    .range([height, 0]);
+
+  // Add x axis
+  let x = d3.scaleLinear()
+    .domain([0, 555000000])
+    .range([margin.left, width + margin.left]);
 
   svg.append("g")
-    .attr('transform', `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).ticks(10, "s"));
+    .attr("transform", `translate(0,${height})`)
+    .attr('font-family', 'Open Sans')
+    .attr('font-weight', 300)
+    .attr('font-size', '12px')
+    .call(d3.axisBottom(x).ticks(6, "s").tickSizeInner(-height));
 
   // Another scale for subgroup position?
-  let xSubgroup = d3.scaleBand()
+  let ySubgroup = d3.scaleBand()
     .domain(subgroups)
-    .range([0, x.bandwidth()])
+    .range([0, y.bandwidth()])
     .padding([0.05])
-
 
   // color palette = one color per subgroup
   let color = d3.scaleOrdinal()
@@ -74,14 +80,14 @@ d3.tsv(tbl).then((data) => {
     .data(data)
     .enter()
     .append("g")
-    .attr("transform", d => `translate(${x(d.group)},0)`)
+    .attr("transform", d => `translate(0,${y(d.group)})`)
     .selectAll("rect")
     .data(d => subgroups.map((key) => ({ key: key, value: d[key] })))
     .enter().append("rect")
-    .attr("x", d => xSubgroup(d.key))
-    .attr("y", d => y(d.value))
-    .attr("width", xSubgroup.bandwidth())
-    .attr("height", (d) => (height - y(d.value)))
+    .attr("y", d => ySubgroup(d.key))
+    .attr("x", d => x(0))
+    .attr("height", ySubgroup.bandwidth())
+    .attr("width", (d) => (x(d.value) - x(0)))
     .attr("fill", d => color(d.key));
 
   /*
@@ -100,7 +106,7 @@ d3.tsv(tbl).then((data) => {
 //   .call(d3.axisLeft(y))
 //   .attr('transform', 'translate(10,0)') // I cannot figure out why I need this line but whatever.
 //   .selectAll('text')
-//   .style('font-family', 'Roboto, sans-serif')
+//   .style('font-family', 'Open Sans, sans-serif')
 //   .style('font-size', '16px')
 //   .style('text-anchor', 'start')
 //   ;
@@ -123,32 +129,21 @@ d3.tsv(tbl).then((data) => {
 //   .text(d => d.Taste_score)
 //   .attr('x', d => x(d.Taste_score) + 4)
 //   .attr('y', d => y(d.Fruit) + 0.5 * y.bandwidth() + 5)
-//   .style('font-family', 'Roboto, sans-serif')
+//   .style('font-family', 'Open Sans, sans-serif')
 //   .style('font-size', '16px')
 //   .style('text-anchor', 'start')
 //   ;
  
-// viz.selectAll('.domain').remove();
-// viz.selectAll('.tick').select('line').remove();
- 
-// viz.append('text')
-//   .text('Taste Scores of Fruits')
-//   .attr('x', 0)
-//   .attr('y', 0)
-//   .attr('dominant-baseline', 'hanging')
-//   .style('font-family', 'Roboto, sans-serif')
-//   .style('font-size', `${titleSize}px`)
-//   ;
- 
- 
- 
- 
- 
-// let image = document.getElementById('#' + imgName);
-// saveSvg(image, imgName.replace(/-/g, ' ') + '.svg');
- 
- 
 */
+  svg.selectAll('.domain').remove();
+  svg.selectAll('text').attr('fill', '#0B1D43');
+  svg.selectAll('.tick').select('line').attr('stroke', '#F5F5F5')
+
+
+  // let image = document.getElementById('#' + imgName);
+  // saveSvg(image, imgName.replace(/-/g, ' ') + '.svg');
+
+
 })
 
 
