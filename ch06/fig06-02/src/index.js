@@ -28,6 +28,7 @@ viz.append('defs')
   ;
 
 d3.tsv(tbl).then((data) => {
+  // Code adapted from https://d3-graph-gallery.com/graph/barplot_grouped_basicWide.html
 
   // List of subgroups = header of the csv files = soil condition here
   let subgroups = data.columns.slice(1)
@@ -78,12 +79,11 @@ d3.tsv(tbl).then((data) => {
     .selectAll("g")
     // Enter in data = loop group per group
     .data(data)
-    .enter()
-    .append("g")
+    .join("g")
     .attr("transform", d => `translate(0,${y(d.group)})`)
     .selectAll("rect")
     .data(d => subgroups.map((key) => ({ key: key, value: d[key] })))
-    .enter().append("rect")
+    .join("rect")
     .attr("y", d => ySubgroup(d.key))
     .attr("x", d => x(0))
     .attr("height", ySubgroup.bandwidth())
@@ -95,8 +95,8 @@ d3.tsv(tbl).then((data) => {
   viz.selectAll('.tick').select('line').attr('stroke', '#F5F5F5')
   viz.selectAll('.axis').attr('font-size', 12)
 
-  let image = document.getElementById('#' + imgName);
-  saveSvg(image, imgName.replace(/-/g, ' ') + '.svg');
+  // let image = document.getElementById('#' + imgName);
+  // saveSvg(image, imgName.replace(/-/g, ' ') + '.svg');
 
 
 })
