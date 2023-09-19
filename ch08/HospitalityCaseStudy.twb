@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8' ?>
 
 <!-- build 20213.23.0507.0958                               -->
-<workbook original-version='18.1' source-build='2021.3.23 (20213.23.0507.0958)' source-platform='mac' version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
+<workbook original-version='18.1' source-build='2021.3.23 (20213.23.0507.0958)' source-platform='mac' version='18.1' xml:base='https://public.tableau.com' xmlns:user='http://www.tableausoftware.com/xml/user'>
   <document-format-change-manifest>
     <_.fcp.AccessibleZoneTabOrder.true...AccessibleZoneTabOrder />
     <_.fcp.AnimationOnByDefault.true...AnimationOnByDefault />
@@ -19,6 +19,7 @@
     <WorksheetBackgroundTransparency />
     <ZoneBackgroundTransparency />
   </document-format-change-manifest>
+  <repository-location id='Chapter8-HousekeepingDashboard' path='/workbooks' revision='1.1' />
   <preferences>
     <preference name='ui.encoding.shelf.height' value='24' />
     <preference name='ui.shelf.height' value='26' />
@@ -445,7 +446,7 @@
       <connection class='federated'>
         <named-connections>
           <named-connection caption='HospitalityCaseStudy-DataSet' name='hyper.0jo0jef0u1wxdl1fcnt531cos2rw'>
-            <connection authentication='auth-none' author-locale='en_US' class='hyper' dbname='/Users/desiree/Documents/GitHub/everyday-data-visualization-illustrations/ch08/HospitalityCaseStudy-DataSet.hyper' default-settings='yes' server='' sslmode='' username='tableau_internal_user' />
+            <connection authentication='auth-none' author-locale='en_US' class='hyper' dbname='/Users/desiree/Documents/GitHub/everyday-data-visualization-illustrations/ch08/HospitalityCaseStudy-DataSet.hyper' default-settings='yes' server='' sslmode='' username='tableau_internal_user' workgroup-auth-mode='as-is' />
           </named-connection>
         </named-connections>
         <_.fcp.ObjectModelEncapsulateLegacy.false...relation connection='hyper.0jo0jef0u1wxdl1fcnt531cos2rw' name='Extract' table='[Extract].[Extract]' type='table' />
@@ -599,6 +600,9 @@
       </column>
       <column datatype='integer' name='[Adults]' role='measure' type='quantitative' />
       <column aggregation='Sum' datatype='real' hidden='true' name='[Avg Room Rate]' role='dimension' type='ordinal' />
+      <column aggregation='Max' caption='Half Capacity' datatype='real' name='[Calculation_3805049147009630208]' role='measure' type='quantitative'>
+        <calculation class='tableau' formula='[Calculation_493918253537419275]*0.5' />
+      </column>
       <column caption='Nights Full' datatype='integer' name='[Calculation_4869868979053318144]' role='measure' type='quantitative'>
         <calculation class='tableau' formula='COUNTD(if [Calculation_493918253574438942] = &apos;full&apos; then [Date] end)' />
       </column>
@@ -679,7 +683,7 @@
           <groupfilter function='level-members' level='[Date]' user:ui-enumeration='all' user:ui-marker='enumerate' />
         </groupfilter>
       </group>
-      <layout _.fcp.SchemaViewerObjectModel.false...dim-percentage='0.5' _.fcp.SchemaViewerObjectModel.false...measure-percentage='0.4' _.fcp.SchemaViewerObjectModel.true...common-percentage='0.829822' _.fcp.SchemaViewerObjectModel.true...user-set-layout-v2='true' dim-ordering='alphabetic' measure-ordering='alphabetic' parameter-percentage='0.170178' show-aliased-fields='true' show-structure='true' />
+      <layout _.fcp.SchemaViewerObjectModel.false...dim-percentage='0.5' _.fcp.SchemaViewerObjectModel.false...measure-percentage='0.4' _.fcp.SchemaViewerObjectModel.true...common-percentage='0.831442' _.fcp.SchemaViewerObjectModel.true...user-set-layout-v2='true' dim-ordering='alphabetic' measure-ordering='alphabetic' parameter-percentage='0.168558' show-aliased-fields='true' show-structure='true' />
       <style>
         <style-rule element='mark'>
           <encoding attr='color' field='[none:Night Type:nk]' palette='CallMeDeeray Extended' type='palette'>
@@ -807,16 +811,16 @@
   <actions>
     <action caption='Highlight' name='[Action1_AC6BFAEDD643489394EAD8F57F7604AD]'>
       <activation auto-clear='true' type='on-select' />
-      <source dashboard='Dashboard 1' type='sheet' worksheet='Donut Header' />
+      <source dashboard='Chapter 8 - Housekeeping Dashboard' type='sheet' worksheet='Donut Header' />
       <command command='tsc:brush'>
         <param name='exclude' value='Reservations,Donut Header' />
         <param name='field-captions' value='Property' />
-        <param name='target' value='Dashboard 1' />
+        <param name='target' value='Chapter 8 - Housekeeping Dashboard' />
       </command>
     </action>
     <edit-parameter-action caption='Parameter | Select Property' name='[Action2_F43B4B6713AE4069A740D073D38E5401]'>
       <activation type='on-select' />
-      <source dashboard='Dashboard 1' type='sheet' worksheet='Donut Header' />
+      <source dashboard='Chapter 8 - Housekeeping Dashboard' type='sheet' worksheet='Donut Header' />
       <agg-type type='attr' />
       <_.fcp.ParameterActionClearSelection.true...clear-option type='do-nothing' value='s:LROOT:' />
       <params>
@@ -1185,14 +1189,14 @@ nights ><[Parameters].[Parameter 5]>
               <bucket>&quot;[federated.07khxdg0i62sm61abenvo0cyd8e3].[usr:Calculation_4869868979056271363:qk]&quot;</bucket>
             </dictionary>
           </manual-sort>
-          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[Date Set]' filter-group='4' />
-          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]' filter-group='3'>
+          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[Date Set]' context='true' filter-group='4' />
+          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]' context='true' filter-group='3'>
             <groupfilter function='member' level='[none:Calculation_493918253524029448:nk]' member='true' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
           </filter>
           <computed-sort column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Room Type:nk]' direction='DESC' using='[federated.07khxdg0i62sm61abenvo0cyd8e3].[sum:Calculation_493918253560156182:qk]' />
           <slices>
-            <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]</column>
             <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[Date Set]</column>
+            <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]</column>
             <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[:Measure Names]</column>
           </slices>
           <aggregation value='true' />
@@ -1330,14 +1334,14 @@ nights ><[Parameters].[Parameter 5]>
               <bucket>&quot;[federated.07khxdg0i62sm61abenvo0cyd8e3].[sum:Adults:qk]&quot;</bucket>
             </dictionary>
           </manual-sort>
-          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[Date Set]' filter-group='4' />
-          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]' filter-group='3'>
+          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[Date Set]' context='true' filter-group='4' />
+          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]' context='true' filter-group='3'>
             <groupfilter function='member' level='[none:Calculation_493918253524029448:nk]' member='true' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
           </filter>
           <computed-sort column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Room Type:nk]' direction='DESC' using='[federated.07khxdg0i62sm61abenvo0cyd8e3].[sum:Calculation_493918253560156182:qk]' />
           <slices>
-            <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]</column>
             <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[Date Set]</column>
+            <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]</column>
           </slices>
           <aggregation value='true' />
         </view>
@@ -1513,8 +1517,8 @@ nights ><[Parameters].[Parameter 5]>
               <bucket>&quot;[federated.07khxdg0i62sm61abenvo0cyd8e3].[max:Reservations | At Capacity (copy)_493918253579956259:qk]&quot;</bucket>
             </dictionary>
           </manual-sort>
-          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[Date Set]' filter-group='4' />
-          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]' filter-group='3'>
+          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[Date Set]' context='true' filter-group='4' />
+          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]' context='true' filter-group='3'>
             <groupfilter function='member' level='[none:Calculation_493918253524029448:nk]' member='true' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
           </filter>
           <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Night Type:nk]'>
@@ -1524,9 +1528,9 @@ nights ><[Parameters].[Parameter 5]>
             </groupfilter>
           </filter>
           <slices>
-            <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[:Measure Names]</column>
-            <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]</column>
             <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[Date Set]</column>
+            <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]</column>
+            <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[:Measure Names]</column>
             <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Night Type:nk]</column>
           </slices>
           <aggregation value='true' />
@@ -1703,8 +1707,8 @@ nights ><[Parameters].[Parameter 5]>
               <bucket>&quot;[federated.07khxdg0i62sm61abenvo0cyd8e3].[max:Calculation_493918253542469645:qk]&quot;</bucket>
             </dictionary>
           </manual-sort>
-          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[Date Set]' filter-group='4' />
-          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]' filter-group='3'>
+          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[Date Set]' context='true' filter-group='4' />
+          <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]' context='true' filter-group='3'>
             <groupfilter function='member' level='[none:Calculation_493918253524029448:nk]' member='true' user:ui-domain='relevant' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
           </filter>
           <filter class='categorical' column='[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Night Type:nk]'>
@@ -1721,9 +1725,9 @@ nights ><[Parameters].[Parameter 5]>
             </dictionary>
           </manual-sort>
           <slices>
-            <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[:Measure Names]</column>
-            <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]</column>
             <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[Date Set]</column>
+            <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]</column>
+            <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[:Measure Names]</column>
             <column>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Night Type:nk]</column>
           </slices>
           <aggregation value='true' />
@@ -1750,12 +1754,6 @@ nights ><[Parameters].[Parameter 5]>
             <format attr='display-field-labels' scope='cols' value='false' />
           </style-rule>
           <style-rule element='refline'>
-            <format attr='fill-above' id='refline0' value='#00000000' />
-            <format attr='fill-below' id='refline0' value='#00000000' />
-            <format attr='line-visibility' id='refline0' value='on' />
-            <format attr='line-pattern-only' id='refline0' value='dashed' />
-            <format attr='stroke-size' id='refline0' value='2' />
-            <format attr='stroke-color' id='refline0' value='#d4d4d4' />
             <format attr='fill-above' id='refline1' value='#00000000' />
             <format attr='fill-below' id='refline1' value='#00000000' />
             <format attr='stroke-size' id='refline1' value='0' />
@@ -1767,6 +1765,13 @@ nights ><[Parameters].[Parameter 5]>
             <format attr='text-align' id='refline2' value='left' />
             <format attr='stroke-size' id='refline2' value='0' />
             <format attr='line-visibility' id='refline2' value='off' />
+          </style-rule>
+          <style-rule element='refband'>
+            <format attr='fill-color' id='refline0' value='#00000000' />
+            <format attr='stroke-color' id='refline0' value='#e6e6e6' />
+            <format attr='stroke-size' id='refline0' value='1' />
+            <format attr='line-visibility' id='refline0' value='on' />
+            <format attr='line-pattern-only' id='refline0' value='dotted' />
           </style-rule>
           <style-rule element='header-div'>
             <format attr='stroke-size' scope='cols' value='0' />
@@ -1861,7 +1866,7 @@ nights ><[Parameters].[Parameter 5]>
     </worksheet>
   </worksheets>
   <dashboards>
-    <dashboard _.fcp.AccessibleZoneTabOrder.true...enable-sort-zone-taborder='true' name='Dashboard 1'>
+    <dashboard _.fcp.AccessibleZoneTabOrder.true...enable-sort-zone-taborder='true' name='Chapter 8 - Housekeeping Dashboard'>
       <style>
         <style-rule element='dash-text'>
           <format attr='vertical-align' id='dash-text_37' value='top' />
@@ -2296,7 +2301,7 @@ nights ><[Parameters].[Parameter 5]>
                 </zone>
                 <zone h='50000' id='11' param='horz' type-v2='layout-flow' w='94000' x='3000' y='46250'>
                   <zone h='46250' id='40' name='Legend' show-title='false' w='6266' x='3000' y='50000'>
-                    <layout-cache cell-count-h='2' cell-count-w='1' type-h='cell' type-w='cell' />
+                    <layout-cache cell-count-w='1' type-h='cell' type-w='cell' />
                     <zone-style>
                       <format attr='border-color' value='#000000' />
                       <format attr='border-style' value='none' />
@@ -2466,7 +2471,7 @@ nights ><[Parameters].[Parameter 5]>
       </viewpoint>
       <simple-id uuid='{0D5DC3A4-8006-4BE5-971B-C4BAA718425E}' />
     </window>
-    <window class='dashboard' maximized='true' name='Dashboard 1'>
+    <window class='dashboard' maximized='true' name='Chapter 8 - Housekeeping Dashboard'>
       <viewpoints>
         <viewpoint name='Donut Header'>
           <zoom type='entire-view' />
@@ -2484,62 +2489,8 @@ nights ><[Parameters].[Parameter 5]>
           <zoom type='entire-view' />
         </viewpoint>
       </viewpoints>
-      <active id='2' />
+      <active id='-1' />
       <simple-id uuid='{EE8EFA57-11DB-4608-9DF4-BEE76496FA7E}' />
-    </window>
-    <window class='worksheet' name='Legend'>
-      <cards>
-        <edge name='left'>
-          <strip size='160'>
-            <card type='pages' />
-            <card type='filters' />
-            <card type='marks' />
-            <card mode='compact' param='[Parameters].[Parameter 1]' type='parameter' />
-            <card type='measures' />
-          </strip>
-        </edge>
-        <edge name='top'>
-          <strip size='2147483647'>
-            <card type='columns' />
-          </strip>
-          <strip size='2147483647'>
-            <card type='rows' />
-          </strip>
-          <strip size='31'>
-            <card type='title' />
-          </strip>
-        </edge>
-        <edge name='right'>
-          <strip size='160'>
-            <card pane-specification-id='1' param='[federated.07khxdg0i62sm61abenvo0cyd8e3].[:Measure Names]' type='shape' />
-          </strip>
-        </edge>
-      </cards>
-      <viewpoint>
-        <zoom type='entire-view' />
-        <highlight>
-          <color-one-way>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[:Measure Names]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253500448768:nk]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253500575745:nk]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253505191941:nk]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253536698378:nk]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Date:ok]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Night Type:nk]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Property:nk]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[sum:Calculation_493918253542469645:ok]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[sum:Calculation_493918253551349774:ok]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[sum:Reservations | At Capacity (copy)_493918253579956259:ok]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[usr:Calculation_493918253500973058:ok]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[usr:Calculation_493918253542469645:nk]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[usr:Calculation_493918253551349774:nk]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[wd:Date:ok]</field>
-            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[wk:Date:ok]</field>
-          </color-one-way>
-        </highlight>
-      </viewpoint>
-      <simple-id uuid='{B01BF16E-F2A0-4A30-A041-D7F1E8893A58}' />
     </window>
     <window class='worksheet' hidden='true' name='Donut Header'>
       <cards>
@@ -2617,6 +2568,60 @@ nights ><[Parameters].[Parameter 5]>
       </viewpoint>
       <simple-id uuid='{86D90DC4-491C-4264-821A-6E8F530A3E6D}' />
     </window>
+    <window class='worksheet' hidden='true' name='Legend'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+            <card mode='compact' param='[Parameters].[Parameter 1]' type='parameter' />
+            <card type='measures' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='31'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card pane-specification-id='1' param='[federated.07khxdg0i62sm61abenvo0cyd8e3].[:Measure Names]' type='shape' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <zoom type='entire-view' />
+        <highlight>
+          <color-one-way>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[:Measure Names]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253500448768:nk]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253500575745:nk]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253505191941:nk]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253524029448:nk]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Calculation_493918253536698378:nk]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Date:ok]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Night Type:nk]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[none:Property:nk]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[sum:Calculation_493918253542469645:ok]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[sum:Calculation_493918253551349774:ok]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[sum:Reservations | At Capacity (copy)_493918253579956259:ok]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[usr:Calculation_493918253500973058:ok]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[usr:Calculation_493918253542469645:nk]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[usr:Calculation_493918253551349774:nk]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[wd:Date:ok]</field>
+            <field>[federated.07khxdg0i62sm61abenvo0cyd8e3].[wk:Date:ok]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+      <simple-id uuid='{B01BF16E-F2A0-4A30-A041-D7F1E8893A58}' />
+    </window>
     <window class='worksheet' hidden='true' name='Reservations'>
       <cards>
         <edge name='left'>
@@ -2673,7 +2678,7 @@ nights ><[Parameters].[Parameter 5]>
     </window>
   </windows>
   <thumbnails>
-    <thumbnail height='384' name='Dashboard 1' width='384'>
+    <thumbnail height='384' name='Chapter 8 - Housekeeping Dashboard' width='384'>
       iVBORw0KGgoAAAANSUhEUgAAAYAAAAGACAYAAACkx7W/AAAACXBIWXMAAA7DAAAOwwHHb6hk
       AAAgAElEQVR4nOydd3hUVd74P3daem+k0kF6J9KbgFQLzbW86lrwta2Kuov+7LuWBcvr7uq6
       6oLu+4oKWEDpvXcCCRASUkjvySSZydR7fn/EjIyhJJlJQpL7eR4eMveec+65d+6c7znfdiQh
@@ -4047,245 +4052,6 @@ nights ><[Parameters].[Parameter 5]>
       9SkaX+JvOnK5XBiNRvr16/eqRfHQ0tJCnz59/OpKCX+zm81mw2q1+mwv7X/WAQgEAoHAO/z2
       FJBAIBAI/lmEAxAIBIJeinAAAoFA0EsRDkAgEAh6KcIBCAQCQS9FOACBQCDopQgHIBAIBL2U
       /wIvVb4147/kTgAAAABJRU5ErkJggg==
-    </thumbnail>
-    <thumbnail height='384' name='Legend' width='384'>
-      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
-      y8vL3Lp1i2KxiDGGYrHIu+++S61WwxjD6uoqd+/exfM8yuUyhUIB27bJ5/M0Go2T7wIcHBxw
-      584dVlZWnsv9uQwUACLyiSKRCN/4xjdYX1/nr/7qr6hUKhhjaDabNBoNUqkUu7u7BAIBurq6
-      eP3119nZ2WF3d5dms8nPfvYzotEov/zlL08CZHNzk0AgwN/+7d/SbDb55je/STAY5Jvf/Cbz
-      8/P87Gc/Y3t7mx/84AcAuK7L3//931Ov1/nWt75FKBTi29/+Nrlcjm9/+9u4rnvyhiFnpwAQ
-      kd8ql8uxvr7O2NgYkUiEeDzOl7/8Zf77v/+b7e1t4vE4nucBR28MU1NTTE9PMzk5STKZxHVd
-      lpaWqFarAIyMjHDz5k0GBgbY2tpifHycmzdv0tLSwvz8PF/5yld488032dvbA+B73/sePT09
-      dHR0sL6+ftIl9N577/GHf/iHvPrqq8Risedzcy4BBYCIfCLbtnn33Xf5+te/zte+9jXC4fDJ
-      n09NTZHJZGhtbSWVSvGrX/2Kn/70p0xPTzMxMcH6+jqf+cxnyOfz1Ot1gsEgcNRtMzc3x87O
-      Dn19fSwvL7O0tEShUGB8fJyf/vSn/PrXv6a1tRWAr3/962xubrK5uUl3dzczMzPcuHGD0dFR
-      /ud//oc7d+6chIucnWWO381ERE5haWmJ7e1tXnvtNZLJJLZt88477zA4OEh/fz+VSoVms0lr
-      aysLCwskEgkGBgYwxrC4uMjBwQHXr18nmUyyu7vL3NwcN2/eJJ1Os7CwQLFY5PXXX6fRaOB5
-      HrFYjJ2dHVpbW/nggw/o7u5maGiIpaUlisUifX199Pb2Pu/b8lJSAIiI+NT/A1SMf9CVrJh/
-      AAAAAElFTkSuQmCC
     </thumbnail>
   </thumbnails>
   <external>
