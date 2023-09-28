@@ -42,14 +42,12 @@ d3.csv(tbl).then((data) => {
     .domain([0, d3.max(data.map(d => d.Words))])
     ;
 
-  let chapters = countArr(data, 'PartChapter', 'Index');
-  console.log(chapters)
+  let [chapters, sections] = countArr(data, 'PartChapter', 'Index');
 
-  // const chapterx = d3.scaleBand()
-  //   .domain(chapters.map(d => d.PartChapter))
-  //   .range([0, 2 * Math.PI])
-  //   ;
-
+  const stackedPartchapter = d3.stack()
+    .keys(Object.keys(chapters[0]))
+    (chapters)
+    ;
 
   const partx = d3.scaleBand()
     .domain(data.map(d => d['PartNumber']))
@@ -57,12 +55,19 @@ d3.csv(tbl).then((data) => {
     ;
 
 
+  let [parts, junk] = countArr(data, 'PartNumber', 'Index');
+  console.log(parts[0])
+  const stackedPart = d3.stack()
+    .keys(Object.keys(parts[0]))
+    (parts)
+    ;
+
 
   viz.append('g')
     .selectAll('path')
     .data(data)
     .join('path')
-    .attr('fill', '#4EC5D3')
+    .attr('fill', 'black')
     .attr('d', d3.arc()
       .innerRadius(innerRadius)
       .outerRadius(d => y(d.Words))
@@ -73,39 +78,38 @@ d3.csv(tbl).then((data) => {
       .cornerRadius(innerRadius)
     )
     ;
-  /*
-    viz.append('g')
-      .selectAll('path')
-      .data(data)
-      .join('path')
-      .attr('fill', '#4EC5D3')
-      .attr('d', d3.arc()
-        .innerRadius(chapterInner)
-        .outerRadius(chapterOuter)
-        .startAngle(d => chapterx(d['ChapterNumber']))
-        .endAngle(d => chapterx(d['ChapterNumber']) + chapterx.bandwidth())
-        .padAngle(0.01)
-        .padRadius(chapterInner * 2)
-        .cornerRadius(ringThickness / 2)
-      )
-      ;
-  
+
   viz.append('g')
     .selectAll('path')
-    .data(data)
+    .data(stackedPartchapter)
     .join('path')
-    .attr('fill', '#4EC5D3')
+    .attr('fill', 'black')
+    .attr('d', d3.arc()
+      .innerRadius(chapterInner)
+      .outerRadius(chapterOuter)
+      .startAngle(d => 2 * Math.PI * d[0][0] / sections)
+      .endAngle(d => 2 * Math.PI * d[0][1] / sections)
+      .padAngle(0.01)
+      .padRadius(chapterInner * 2)
+      .cornerRadius(ringThickness / 2)
+    )
+    ;
+
+  viz.append('g')
+    .selectAll('path')
+    .data(stackedPart)
+    .join('path')
+    .attr('fill', 'black')
     .attr('d', d3.arc()
       .innerRadius(partInner)
       .outerRadius(partOuter)
-      .startAngle(d => partx(d['Part number']))
-      .endAngle(d => partx(d['Part number']) + partx.bandwidth())
+      .startAngle(d => 2 * Math.PI * d[0][0] / sections)
+      .endAngle(d => 2 * Math.PI * d[0][1] / sections)
       .padAngle(0.01)
       .padRadius(partInner * 2)
       .cornerRadius(ringThickness / 2)
     )
     ;
-    */
   /*
     viz.append('g')
       .selectAll('g')
@@ -129,6 +133,30 @@ d3.csv(tbl).then((data) => {
 })
 
 
+
+const countArr = (arr, on, what) => {
+  let counts = {}, total = 0, things = {};
+  arr.forEach(d => {
+    if (things[d[on]]) {
+      things[d[on]] += 1;
+    }
+    else {
+      things[d[on]] = 1;
+    }
+
+  });
+  Object.keys(things).forEach(d => {
+    counts[d.toString()] = things[d];
+    total += things[d];
+  })
+
+  return [[counts], total];
+}
+
+
+
+
+/*
 const countArr = (arr, on, what) => {
 
   // using reduce() method to count 
@@ -162,11 +190,12 @@ const countArr = (arr, on, what) => {
   agg.forEach(d => {
     counts.push({ [on]: d[on], 'Length': d[what].length })
   });
+
   // return only values after aggregation 
   return counts //Object.values(agg);
 
 }
-
+*/
 function saveSvg(svgEl, name) {
   svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   var svgData = svgEl.outerHTML;
