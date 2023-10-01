@@ -262,9 +262,7 @@ d3.csv(tbl).then((data) => {
 
   let img = document.getElementById('#svg'),
     filename = 'InsideCover';
-  //saveSvg(img, filename + '.svg');
-
-
+  // saveSvg(img, filename + '.svg');
 
 })
 
