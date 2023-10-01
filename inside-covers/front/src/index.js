@@ -1,6 +1,6 @@
 
 import * as d3 from "d3";
-// const tbl = require('url:./weekdayWordsbyIndex.csv');
+import { textwrap } from 'd3-textwrap';
 const tbl = require('url:./wordcounts.csv');
 
 // Leaned heavily on v6 code from https://d3-graph-gallery.com/graph/circular_barplot_label.html
@@ -12,17 +12,22 @@ const
   height = 700 - margin.top - margin.bottom,
   innerRadius = 200,
   outerRadius = Math.min(width, height * 0.95) / 2,
-  ringPadding = 5,
-  ringThickness = 3,
+  ringPadding = 3,
+  ringThickness = 30,
   chapterOuter = innerRadius - ringPadding,
   chapterInner = chapterOuter - ringThickness,
+  chapterLabel = ((chapterOuter + chapterInner) / 2),
   partOuter = chapterInner - ringPadding,
-  partInner = partOuter - ringThickness
+  partInner = partOuter - ringThickness * 1.5,
+  partLabel = ((partOuter + partInner) / 2),
+  circleStart = 0,
+  circleEnd = (2 * Math.PI) - circleStart
   ;
 
 let viz = d3.select('#vizcontainer')
   .append('svg')
   .attr('id', '#svg')
+  .attr('xmlns', 'http://www.w3.org/2000/svg')
   .attr('width', width + margin.left + margin.right)
   .attr('height', height + margin.top + margin.bottom)
   .append('g')
@@ -32,9 +37,64 @@ let viz = d3.select('#vizcontainer')
 
 
 d3.csv(tbl).then((data) => {
+
+  let title = viz.append('text')
+
+  title
+    .append('tspan')
+    .attr('x', 0)
+    .attr('y', -60)
+    .attr('text-anchor', 'middle')
+    .attr('alignment-baseline', 'middle')
+    .text('A picture')
+    .style('font-family', 'Euphoria Script')
+    .style('font-size', '48px')
+    // is worth a ')
+    ;
+  title.append('tspan')
+    .attr('x', 0)
+    .attr('y', -42)
+    .attr('text-anchor', 'middle')
+    .attr('alignment-baseline', 'middle')
+    .attr('dy', 22)
+    .text('is worth a')
+    .style('font-family', 'Euphoria Script')
+    .style('font-size', '48px')
+    ;
+  title.append('tspan')
+    .attr('x', 0)
+    .attr('y', -15)
+    .attr('text-anchor', 'middle')
+    .attr('alignment-baseline', 'middle')
+    .style('font-weight', '100')
+    .attr('dy', 22)
+    .text('(hundred)')
+    ;
+
+  title.append('tspan')
+    .attr('x', 0)
+    .attr('y', -5)
+    .attr('text-anchor', 'middle')
+    .attr('alignment-baseline', 'middle')
+    .attr('dy', 40)
+    .style('font-family', 'Euphoria Script')
+    .style('font-size', '48px')
+    .text('thousand')
+    ;
+
+  title.append('tspan')
+    .attr('x', 0)
+    .attr('y', 5)
+    .attr('text-anchor', 'middle')
+    .attr('alignment-baseline', 'middle')
+    .attr('dy', 64)
+    .style('font-family', 'Euphoria Script')
+    .style('font-size', '48px')
+    .text('words.')
+    ;
   const x = d3.scaleBand()
     .domain(data.map(d => d.Index))
-    .range([0, 2 * Math.PI])
+    .range([circleStart, circleEnd])
     ;
 
   const y = d3.scaleRadial()
@@ -49,21 +109,16 @@ d3.csv(tbl).then((data) => {
     (chapters)
     ;
 
-  const partx = d3.scaleBand()
-    .domain(data.map(d => d['PartNumber']))
-    .range([0, 2 * Math.PI])
-    ;
-
-
   let [parts, junk] = countArr(data, 'PartNumber', 'Index');
-  console.log(parts[0])
   const stackedPart = d3.stack()
     .keys(Object.keys(parts[0]))
     (parts)
     ;
 
 
+
   viz.append('g')
+    .attr('id', 'wordCounts')
     .selectAll('path')
     .data(data)
     .join('path')
@@ -79,54 +134,135 @@ d3.csv(tbl).then((data) => {
     )
     ;
 
+  // Add a slim ring to place the text on
   viz.append('g')
+    .attr('id', 'ChapterLabelBaseline')
     .selectAll('path')
     .data(stackedPartchapter)
     .join('path')
-    .attr('fill', 'black')
+    .attr('id', d => d.key)
+    .attr('fill', 'none')
+    .attr('stroke', 'none')
     .attr('d', d3.arc()
-      .innerRadius(chapterInner)
-      .outerRadius(chapterOuter)
-      .startAngle(d => 2 * Math.PI * d[0][0] / sections)
-      .endAngle(d => 2 * Math.PI * d[0][1] / sections)
+      .innerRadius(chapterLabel)
+      .outerRadius(chapterLabel)
+      .startAngle(d => angles(d[0], sections)[0])
+      .endAngle(d => angles(d[0], sections)[1])
       .padAngle(0.01)
       .padRadius(chapterInner * 2)
-      .cornerRadius(ringThickness / 2)
     )
     ;
 
+  // Now add the chunky ring for the chapters
   viz.append('g')
+    .attr('id', 'Chapters')
+    .selectAll('path')
+    .data(stackedPartchapter)
+    .join('path')
+    .attr('fill', 'none')
+    .attr('stroke', 'black')
+    .attr('d', d3.arc()
+      .innerRadius(chapterInner)
+      .outerRadius(chapterOuter)
+      .startAngle(d => angles(d[0], sections)[0])
+      .endAngle(d => angles(d[0], sections)[1])
+      .padAngle(0.01)
+      .padRadius(chapterInner * 2)
+      .cornerRadius(ringThickness / 8)
+    )
+    ;
+  // Now add the text for the chapter labels
+  viz.append('g')
+    .attr('id', 'ChapterLabels')
+    .selectAll('text')
+    .data(stackedPartchapter)
+    .join('text')
+    .append('textPath')
+    .attr('href', d => `#${d.key}`)
+    .style('text-anchor', 'middle')
+    .style('font-size', '12px')
+    .style('font-family', 'Roboto')
+    .attr('alignment-baseline', 'middle')
+    .attr('startOffset', (d) => {
+      let offset = '25%'
+      if (angles(d[0], sections)[0] > Math.PI / 2 && angles(d[0], sections)[0] < 5 * Math.PI / 4) {
+        offset = '75%'
+      }
+      return offset
+    })
+    .text((d) => {
+      let ch = d.key.split('.')[1];
+      if (ch > 0) {
+        return 'Chapter ' + ch.toString()
+      }
+    })
+    ;
+  // Add another slim ring for the part labels
+  viz.append('g')
+    .attr('id', 'PartLabelBaseline')
     .selectAll('path')
     .data(stackedPart)
     .join('path')
-    .attr('fill', 'black')
+    .attr('fill', 'none')
+    .attr('id', d => d.key)
+    .attr('stroke', 'none')
+    .attr('d', d3.arc()
+      .innerRadius(partLabel)
+      .outerRadius(partLabel)
+      .startAngle(d => angles(d[0], sections)[0])
+      .endAngle(d => angles(d[0], sections)[1])
+      .padAngle(0.01)
+      .padRadius(partInner * 2)
+      .cornerRadius(ringThickness / 8)
+    )
+    ;
+
+
+  // Now make the real rings for the parts
+  viz.append('g')
+    .attr('id', 'Parts')
+    .selectAll('path')
+    .data(stackedPart)
+    .join('path')
+    .attr('fill', 'none')
+    .attr('id', d => 'Part ' + d.key)
+    .attr('stroke', 'black')
     .attr('d', d3.arc()
       .innerRadius(partInner)
       .outerRadius(partOuter)
-      .startAngle(d => 2 * Math.PI * d[0][0] / sections)
-      .endAngle(d => 2 * Math.PI * d[0][1] / sections)
+      .startAngle(d => angles(d[0], sections)[0])
+      .endAngle(d => angles(d[0], sections)[1])
       .padAngle(0.01)
       .padRadius(partInner * 2)
-      .cornerRadius(ringThickness / 2)
+      .cornerRadius(ringThickness / 8)
     )
     ;
-  /*
-    viz.append('g')
-      .selectAll('g')
-      .data(data)
-      .join('g')
-      .attr('text-anchor', d => (x(d.Index) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "end" : "start")
-      .attr('transform', d => 'rotate(' + ((x(d.Index) + x.bandwidth() / 2) * 180 / Math.PI - 90) + ")" + "translate(" + (y(0) - 18) + ",0)")
-      .append('text')
-      .text(d => d.Index)
-      .attr('transform', d => (x(d.Index) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "rotate(180)" : "rotate(0)")
-      .style('font-size', '11px')
-      .attr('alignment-baseline', 'middle')
-   
-  */
+
+  // Now add the text for the part labels
+  viz.append('g')
+    .attr('id', 'PartLabels')
+    .selectAll('text')
+    .data(stackedPart)
+    .join('text')
+    .append('textPath')
+    .attr('href', d => `#${d.key}`)
+    .style('text-anchor', 'middle')
+    .style('font-size', '18px')
+    .style('font-family', 'Roboto')
+    .attr('alignment-baseline', 'middle')
+    .attr('startOffset', (d) => {
+      let offset = '25%'
+      if (angles(d[0], sections)[0] > Math.PI / 2 && angles(d[0], sections)[0] < 5 * Math.PI / 4) {
+        offset = '75%'
+      }
+      return offset
+    })
+    .text(d => `Part ${d.key}`)
+    ;
+
   let img = document.getElementById('#svg'),
     filename = 'InsideCover';
-  // saveSvg(img, filename + '.svg');
+  //saveSvg(img, filename + '.svg');
 
 
 
@@ -153,49 +289,14 @@ const countArr = (arr, on, what) => {
   return [[counts], total];
 }
 
+const angles = ([d0, d1], s) => {
+  let start = circleStart + (circleEnd - circleStart) * d0 / s,
+    end = circleStart + (circleEnd - circleStart) * d1 / s;
 
-
-
-/*
-const countArr = (arr, on, what) => {
-
-  // using reduce() method to count 
-  const agg = arr.reduce((output, current) => {
-
-    // get the value of both the keys 
-    const onValue = current[on];
-    const whatValue = current[what];
-
-    // if there is already a key present
-    // merge its value
-    if (output[onValue]) {
-      output[onValue] = {
-        [on]: onValue,
-        [what]: [...output[onValue][what], whatValue]
-      }
-    }
-    // create a new entry on the key
-    else {
-      output[onValue] = {
-        [on]: onValue,
-        [what]: [whatValue]
-      }
-    }
-    // return the aggregation
-    return Object.values(output);
-  }, {});
-
-  // console.log(agg.length)
-  let counts = [];
-  agg.forEach(d => {
-    counts.push({ [on]: d[on], 'Length': d[what].length })
-  });
-
-  // return only values after aggregation 
-  return counts //Object.values(agg);
-
+  return [start, end]
 }
-*/
+
+
 function saveSvg(svgEl, name) {
   svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   var svgData = svgEl.outerHTML;
